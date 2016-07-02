@@ -1,16 +1,16 @@
 function! s:buffer_path(force) "{{{
   let l:path = expand('%:p')
   if empty(l:path)
-    call ghcmod#util#print_warning("current version of ghcmod.vim doesn't support running on an unnamed buffer.")
+    call intero#util#print_warning("current version of intero.vim doesn't support running on an unnamed buffer.")
     return ''
   endif
 
   if &l:modified
-    let l:msg = 'ghcmod.vim: the current buffer has been modified but not written'
+    let l:msg = 'intero.vim: the current buffer has been modified but not written'
     if a:force
-      call ghcmod#util#print_warning(l:msg)
+      call intero#util#print_warning(l:msg)
     else
-      call ghcmod#util#print_error(l:msg)
+      call intero#util#print_error(l:msg)
       return ''
     endif
   endif
@@ -18,18 +18,18 @@ function! s:buffer_path(force) "{{{
   return l:path
 endfunction "}}}
 
-function! ghcmod#command#type(force) "{{{
+function! intero#command#type(force) "{{{
   let l:line = line('.')
-  let l:col = ghcmod#util#getcol()
+  let l:col = intero#util#getcol()
 
-  if exists('b:ghcmod_type')
-    if b:ghcmod_type.spans(l:line, l:col)
-      call b:ghcmod_type.incr_ix()
-      call b:ghcmod_type.highlight()
-      echo b:ghcmod_type.type()
+  if exists('b:intero_type')
+    if b:intero_type.spans(l:line, l:col)
+      call b:intero_type.incr_ix()
+      call b:intero_type.highlight()
+      echo b:intero_type.type()
       return
     endif
-    call b:ghcmod_type.clear_highlight()
+    call b:intero_type.clear_highlight()
   endif
 
   let l:path = s:buffer_path(a:force)
@@ -37,34 +37,34 @@ function! ghcmod#command#type(force) "{{{
     return
   endif
 
-  let l:types = ghcmod#type(l:line, l:col, l:path)
+  let l:types = intero#type(l:line, l:col, l:path)
   if empty(l:types)
-    call ghcmod#util#print_error('ghcmod#command#type: Cannot guess type')
+    call intero#util#print_error('intero#command#type: Cannot guess type')
     return
   endif
 
-  let b:ghcmod_type = ghcmod#type#new(l:types, ghcmod#highlight_group())
-  call b:ghcmod_type.highlight()
+  let b:intero_type = intero#type#new(l:types, intero#highlight_group())
+  call b:intero_type.highlight()
 
-  echo b:ghcmod_type.type()
+  echo b:intero_type.type()
 endfunction "}}}
 
-function! ghcmod#command#type_clear() "{{{
-  if exists('b:ghcmod_type')
-    call b:ghcmod_type.clear_highlight()
-    unlet b:ghcmod_type
+function! intero#command#type_clear() "{{{
+  if exists('b:intero_type')
+    call b:intero_type.clear_highlight()
+    unlet b:intero_type
   endif
 endfunction "}}}
 
-function! ghcmod#command#split_function_case(force) "{{{
+function! intero#command#split_function_case(force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
   endif
 
-  let l:decls = ghcmod#split(line('.'), col('.'), l:path)
+  let l:decls = intero#split(line('.'), col('.'), l:path)
   if empty(l:decls)
-    call ghcmod#util#print_warning('No splittable constructor')
+    call intero#util#print_warning('No splittable constructor')
     return
   endif
 
@@ -72,15 +72,15 @@ function! ghcmod#command#split_function_case(force) "{{{
   delete _
 endfunction "}}}
 
-function! ghcmod#command#initial_code_from_signature(force) "{{{
+function! intero#command#initial_code_from_signature(force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
   endif
 
-  let l:initial_code = ghcmod#sig(line('.'), col('.'), l:path)
+  let l:initial_code = intero#sig(line('.'), col('.'), l:path)
   if empty(l:initial_code)
-    call ghcmod#util#print_warning('Cannot generate initial code')
+    call intero#util#print_warning('Cannot generate initial code')
     return
   endif
 
@@ -93,21 +93,21 @@ function! ghcmod#command#initial_code_from_signature(force) "{{{
   call append('.', l:codes)
 endfunction "}}}
 
-function! ghcmod#command#type_insert(force) "{{{
+function! intero#command#type_insert(force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
   endif
 
-  let l:fexp = ghcmod#getHaskellIdentifier()
+  let l:fexp = intero#getHaskellIdentifier()
   if empty(l:fexp)
-    call ghcmod#util#print_error('Failed to determine identifier under cursor.')
+    call intero#util#print_error('Failed to determine identifier under cursor.')
     return
   endif
 
-  let l:types = ghcmod#type(line('.'), ghcmod#util#getcol(), l:path)
+  let l:types = intero#type(line('.'), intero#util#getcol(), l:path)
   if empty(l:types) " Everything failed so let's just abort
-    call ghcmod#util#print_error('ghcmod#command#type_insert: Cannot guess type')
+    call intero#util#print_error('intero#command#type_insert: Cannot guess type')
     return
   endif
   let [l:locsym, l:type] = l:types[0]
@@ -115,7 +115,7 @@ function! ghcmod#command#type_insert(force) "{{{
   let [_, l:offset, _, _] = l:locsym
 
   if l:offset == 1 " We're doing top-level, let's try to use :info instead
-    let l:info = ghcmod#info(l:fexp, l:path)
+    let l:info = intero#info(l:fexp, l:path)
     if !empty(l:info) " Continue only if we don't find errors
       let l:info = substitute(l:info, '\n\|\t.*', "", "g") " Remove extra lines
       let l:info = substitute(l:info, '\s\+', " ", "g") " Compress whitespace
@@ -133,26 +133,26 @@ function! s:info(fexp, force) "{{{
   endif
   let l:fexp = a:fexp
   if empty(l:fexp)
-    let l:fexp = ghcmod#getHaskellIdentifier()
+    let l:fexp = intero#getHaskellIdentifier()
   end
-  return ghcmod#info(l:fexp, l:path)
+  return intero#info(l:fexp, l:path)
 endfunction "}}}
 
-function! ghcmod#command#info(fexp, force) "{{{
+function! intero#command#info(fexp, force) "{{{
   let l:info = s:info(a:fexp, a:force)
   if !empty(l:info)
     echo l:info
   endif
 endfunction "}}}
 
-function! ghcmod#command#info_preview(fexp, force, ...) "{{{
+function! intero#command#info_preview(fexp, force, ...) "{{{
   let l:info = s:info(a:fexp, a:force)
   if empty(l:info)
     return
   endif
 
   if a:0 == 0
-    let l:size = get(g:, 'ghcmod_max_preview_size', 10)
+    let l:size = get(g:, 'intero_max_preview_size', 10)
   else
     let l:size = a:000[0]
   endif
@@ -181,13 +181,13 @@ function! ghcmod#command#info_preview(fexp, force, ...) "{{{
   wincmd p
 endfunction "}}}
 
-function! ghcmod#command#make(type, force) "{{{
+function! intero#command#make(type, force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
   endif
 
-  let l:qflist = ghcmod#make(a:type, l:path)
+  let l:qflist = intero#make(a:type, l:path)
   call setqflist(l:qflist)
   call s:open_quickfix()
   if empty(l:qflist)
@@ -195,7 +195,7 @@ function! ghcmod#command#make(type, force) "{{{
   endif
 endfunction "}}}
 
-function! ghcmod#command#async_make(type, force) "{{{
+function! intero#command#async_make(type, force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
@@ -214,10 +214,10 @@ function! ghcmod#command#async_make(type, force) "{{{
     endif
   endfunction
 
-  call ghcmod#async_make(a:type, l:path, l:callback)
+  call intero#async_make(a:type, l:path, l:callback)
 endfunction "}}}
 
-function! ghcmod#command#check_and_lint_async(force) "{{{
+function! intero#command#check_and_lint_async(force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
@@ -241,24 +241,24 @@ function! ghcmod#command#check_and_lint_async(force) "{{{
     endif
   endfunction
 
-  if !ghcmod#async#exist_session()
-    call ghcmod#async_make('check', l:path, l:callback)
-    call ghcmod#async_make('lint', l:path, l:callback)
+  if !intero#async#exist_session()
+    call intero#async_make('check', l:path, l:callback)
+    call intero#async_make('lint', l:path, l:callback)
   endif
 endfunction "}}}
 
-function! ghcmod#command#expand(force) "{{{
+function! intero#command#expand(force) "{{{
   let l:path = s:buffer_path(a:force)
   if empty(l:path)
     return
   endif
 
-  call setqflist(ghcmod#expand(l:path))
+  call setqflist(intero#expand(l:path))
   call s:open_quickfix()
 endfunction "}}}
 
 function! s:open_quickfix() "{{{
-  let l:func = get(g:, 'ghcmod_open_quickfix_function', '')
+  let l:func = get(g:, 'intero_open_quickfix_function', '')
   if empty(l:func)
     cwindow
   else
@@ -266,7 +266,7 @@ function! s:open_quickfix() "{{{
       call call(l:func, [])
     catch
       echomsg substitute(v:exception, '^.*:[WE]\d\+: ', '', '')
-            \ .': Please check g:ghcmod_open_quickfix_function'
+            \ .': Please check g:intero_open_quickfix_function'
     endtry
   endif
 endfunction "}}}

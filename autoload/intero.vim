@@ -1,9 +1,9 @@
-function! ghcmod#highlight_group() "{{{
-  return get(g:, 'ghcmod_type_highlight', 'Search')
+function! intero#highlight_group() "{{{
+  return get(g:, 'intero_type_highlight', 'Search')
 endfunction "}}}
 
 " Return the current haskell identifier
-function! ghcmod#getHaskellIdentifier() "{{{
+function! intero#getHaskellIdentifier() "{{{
   let c = col ('.')-1
   let l = line('.')
   let ll = getline(l)
@@ -14,17 +14,17 @@ function! ghcmod#getHaskellIdentifier() "{{{
   return ll1.ll2
 endfunction "}}}
 
-function! ghcmod#info(fexp, path, ...) "{{{
-  let l:cmd = ghcmod#build_command(["-b \n", 'info', a:path, a:fexp])
-  let l:output = ghcmod#system(l:cmd)
+function! intero#info(fexp, path, ...) "{{{
+  let l:cmd = intero#build_command(["-b \n", 'info', a:path, a:fexp])
+  let l:output = intero#system(l:cmd)
   " Remove trailing newlines to prevent empty lines
   let l:output = substitute(l:output, '\n*$', '', '')
   return s:remove_dummy_prefix(l:output)
 endfunction "}}}
 
-function! ghcmod#split(line, col, path, ...) "{{{
+function! intero#split(line, col, path, ...) "{{{
   " `ghc-mod split` is available since v5.0.0.
-  let l:cmd = ghcmod#build_command(['split', a:path, a:line, a:col])
+  let l:cmd = intero#build_command(['split', a:path, a:line, a:col])
   let l:lines = s:system('split', l:cmd)
   if empty(l:lines)
     return []
@@ -36,9 +36,9 @@ function! ghcmod#split(line, col, path, ...) "{{{
   return split(l:parsed[5], '\n')
 endfunction "}}}
 
-function! ghcmod#sig(line, col, path, ...) "{{{
+function! intero#sig(line, col, path, ...) "{{{
   " `ghc-mod sig` is available since v5.0.0.
-  let l:cmd = ghcmod#build_command(['sig', a:path, a:line, a:col])
+  let l:cmd = intero#build_command(['sig', a:path, a:line, a:col])
   let l:lines = s:system('sig', l:cmd)
   if len(l:lines) < 3
     return []
@@ -46,9 +46,9 @@ function! ghcmod#sig(line, col, path, ...) "{{{
   return [l:lines[0], l:lines[2 :]]
 endfunction "}}}
 
-function! ghcmod#type(line, col, path, ...) "{{{
-  let l:cmd = ghcmod#build_command(['type', a:path, a:line, a:col])
-  let l:output = ghcmod#system(l:cmd)
+function! intero#type(line, col, path, ...) "{{{
+  let l:cmd = intero#build_command(['type', a:path, a:line, a:col])
+  let l:output = intero#system(l:cmd)
   let l:types = []
   for l:line in split(l:output, '\n')
     let l:m = matchlist(l:line, '\(\d\+\) \(\d\+\) \(\d\+\) \(\d\+\) "\([^"]\+\)"')
@@ -59,7 +59,7 @@ function! ghcmod#type(line, col, path, ...) "{{{
   return l:types
 endfunction "}}}
 
-function! ghcmod#detect_module() "{{{
+function! intero#detect_module() "{{{
   let l:regex = '^\C>\=\s*module\s\+\zs[A-Za-z0-9.]\+'
   for l:lineno in range(1, line('$'))
     let l:line = getline(l:lineno)
@@ -85,7 +85,7 @@ function! s:fix_qf_lnum_col(qf) "{{{
   endfor
 endfunction "}}}
 
-function! ghcmod#parse_make(lines, basedir) "{{{
+function! intero#parse_make(lines, basedir) "{{{
   " `ghc-mod check` and `ghc-mod lint` produces <NUL> characters but Vim cannot
   " treat them correctly.  Vim converts <NUL> characters to <NL> in readfile().
   " See also :help readfile() and :help NL-used-for-Nul.
@@ -99,12 +99,12 @@ function! ghcmod#parse_make(lines, basedir) "{{{
     if len(l:m) < 5
       let l:qf.bufnr = 0
       let l:qf.type = 'E'
-      let l:qf.text = 'parse error in ghcmod! Could not parse the following ghc-mod output:' .  l:output
+      let l:qf.text = 'parse error in intero! Could not parse the following ghc-mod output:' .  l:output
       call add(l:qflist, l:qf)
       break
     end
     let [l:qf.filename, _, l:qf.lnum, l:qf.col, l:rest] = l:m[1 : 5]
-    let l:qf.filename = ghcmod#util#join_path(a:basedir, l:qf.filename)
+    let l:qf.filename = intero#util#join_path(a:basedir, l:qf.filename)
     if l:rest =~# '^Warning:'
       let l:qf.type = 'W'
       let l:rest = matchstr(l:rest, '^Warning:\s*\zs.*$')
@@ -124,7 +124,7 @@ function! ghcmod#parse_make(lines, basedir) "{{{
     else
       let l:qf.type = 'E'
       call s:fix_qf_lnum_col(l:qf)
-      let l:qf.text = 'parse error in ghcmod! Could not parse the following ghc-mod output:'
+      let l:qf.text = 'parse error in intero! Could not parse the following ghc-mod output:'
       call add(l:qflist, l:qf)
       for l:text in a:lines
         call add(l:qflist, {'text': l:text})
@@ -136,9 +136,9 @@ function! ghcmod#parse_make(lines, basedir) "{{{
 endfunction "}}}
 
 function! s:build_make_command(type, path) "{{{
-  let l:cmd = ghcmod#build_command([a:type])
+  let l:cmd = intero#build_command([a:type])
   if a:type ==# 'lint'
-    for l:hopt in get(g:, 'ghcmod_hlint_options', [])
+    for l:hopt in get(g:, 'intero_hlint_options', [])
       call extend(l:cmd, ['-h', l:hopt])
     endfor
   endif
@@ -146,16 +146,16 @@ function! s:build_make_command(type, path) "{{{
   return l:cmd
 endfunction "}}}
 
-function! ghcmod#make(type, path) "{{{
+function! intero#make(type, path) "{{{
   try
     let l:args = s:build_make_command(a:type, a:path)
-    return ghcmod#parse_make(s:system(a:type, l:args), b:ghcmod_basedir)
+    return intero#parse_make(s:system(a:type, l:args), b:intero_basedir)
   catch
-    call ghcmod#util#print_error(printf('%s %s', v:throwpoint, v:exception))
+    call intero#util#print_error(printf('%s %s', v:throwpoint, v:exception))
   endtry
 endfunction "}}}
 
-function! ghcmod#async_make(type, path, callback) "{{{
+function! intero#async_make(type, path, callback) "{{{
   let l:tmpfile = tempname()
   let l:args = s:build_make_command(a:type, a:path)
   let l:proc = s:plineopen3([{'args': l:args,  'fd': { 'stdin': '', 'stdout': l:tmpfile, 'stderr': '' }}])
@@ -164,27 +164,27 @@ function! ghcmod#async_make(type, path, callback) "{{{
         \ 'tmpfile': l:tmpfile,
         \ 'callback': a:callback,
         \ 'type': a:type,
-        \ 'basedir': ghcmod#basedir(),
+        \ 'basedir': intero#basedir(),
         \ }
   function! l:obj.on_finish(cond, status)
-    let l:qflist = ghcmod#parse_make(readfile(self.tmpfile), self.basedir)
+    let l:qflist = intero#parse_make(readfile(self.tmpfile), self.basedir)
     call delete(self.tmpfile)
     call self.callback.on_finish(l:qflist)
   endfunction
 
-  if !ghcmod#async#register(l:obj)
+  if !intero#async#register(l:obj)
     call l:proc.kill(15)
     call l:proc.waitpid()
     call delete(l:tmpfile)
   endif
 endfunction "}}}
 
-function! ghcmod#expand(path) "{{{
+function! intero#expand(path) "{{{
   let l:dir = fnamemodify(a:path, ':h')
 
   let l:qflist = []
-  let l:cmd = ghcmod#build_command(['expand', "-b '\n'", a:path])
-  for l:line in split(ghcmod#system(l:cmd), '\n')
+  let l:cmd = intero#build_command(['expand', "-b '\n'", a:path])
+  for l:line in split(intero#system(l:cmd), '\n')
     let l:line = s:remove_dummy_prefix(l:line)
 
     " path:line:col1-col2: message
@@ -217,7 +217,7 @@ function! ghcmod#expand(path) "{{{
 
   for l:qf in l:qflist
     if has_key(l:qf, 'filename')
-      let l:qf.filename = ghcmod#util#join_path(l:dir, l:qf.filename)
+      let l:qf.filename = intero#util#join_path(l:dir, l:qf.filename)
     endif
     if has_key(l:qf, 'lnum')
       let l:qf.lnum = str2nr(l:qf.lnum)
@@ -232,7 +232,7 @@ function! s:remove_dummy_prefix(str) "{{{
   return substitute(a:str, '^Dummy:0:0:Error:', '', '')
 endfunction "}}}
 
-function! ghcmod#add_autogen_dir(path, cmd) "{{{
+function! intero#add_autogen_dir(path, cmd) "{{{
   " detect autogen directory
   let l:autogen_dir = a:path . '/autogen'
   if isdirectory(l:autogen_dir)
@@ -244,7 +244,7 @@ function! ghcmod#add_autogen_dir(path, cmd) "{{{
   endif
 endfunction "}}}
 
-function! ghcmod#build_command(args) "{{{
+function! intero#build_command(args) "{{{
   let l:cmd = ['ghc-mod', '--silent']
 
   let l:dist_top  = s:find_basedir() . '/dist'
@@ -252,9 +252,9 @@ function! ghcmod#build_command(args) "{{{
   for l:dist_dir in [l:dist_top] + l:sandboxes
     let l:build_dir = l:dist_dir . '/build'
     if isdirectory(l:build_dir)
-      call ghcmod#add_autogen_dir(l:build_dir, l:cmd)
+      call intero#add_autogen_dir(l:build_dir, l:cmd)
 
-      let l:tmps = ghcmod#util#globlist(l:build_dir . '/*/*-tmp')
+      let l:tmps = intero#util#globlist(l:build_dir . '/*/*-tmp')
       if !empty(l:tmps)
         " add *-tmp directory to include path for executable project
         for l:tmp in l:tmps
@@ -267,10 +267,10 @@ function! ghcmod#build_command(args) "{{{
     endif
   endfor
 
-  if exists('b:ghcmod_ghc_options')
-    let l:opts = b:ghcmod_ghc_options
+  if exists('b:intero_ghc_options')
+    let l:opts = b:intero_ghc_options
   else
-    let l:opts = get(g:, 'ghcmod_ghc_options', [])
+    let l:opts = get(g:, 'intero_ghc_options', [])
   endif
   for l:opt in l:opts
     call extend(l:cmd, ['-g', l:opt])
@@ -279,10 +279,10 @@ function! ghcmod#build_command(args) "{{{
   return l:cmd
 endfunction "}}}
 
-function! ghcmod#system(...) "{{{
+function! intero#system(...) "{{{
   let l:dir = getcwd()
   try
-    lcd `=ghcmod#basedir()`
+    lcd `=intero#basedir()`
     let l:ret = call('vimproc#system', a:000)
   finally
     lcd `=l:dir`
@@ -293,7 +293,7 @@ endfunction "}}}
 function! s:plineopen3(...) "{{{
   let l:dir = getcwd()
   try
-    lcd `=ghcmod#basedir()`
+    lcd `=intero#basedir()`
     let l:ret = call('vimproc#plineopen3', a:000)
   finally
     lcd `=l:dir`
@@ -305,16 +305,16 @@ function! s:system(type, args) "{{{
   let l:tmpfile = tempname()
   try
     let l:proc = s:plineopen3([{'args': a:args,  'fd': { 'stdin': '', 'stdout': l:tmpfile, 'stderr': '' }}])
-    let [l:cond, l:status] = ghcmod#util#wait(l:proc)
+    let [l:cond, l:status] = intero#util#wait(l:proc)
     let l:tries = 1
     while l:cond ==# 'run'
       if l:tries >= 50
         call l:proc.kill(15)  " SIGTERM
         call l:proc.waitpid()
-        throw printf('ghcmod#make: `ghc-mod %s` takes too long time!', a:type)
+        throw printf('intero#make: `ghc-mod %s` takes too long time!', a:type)
       endif
       sleep 100m
-      let [l:cond, l:status] = ghcmod#util#wait(l:proc)
+      let [l:cond, l:status] = intero#util#wait(l:proc)
       let l:tries += 1
     endwhile
     let l:lines = readfile(l:tmpfile)
@@ -324,8 +324,8 @@ function! s:system(type, args) "{{{
   endtry
 endfunction "}}}
 
-function! ghcmod#basedir() "{{{
-  let l:use_basedir = get(g:, 'ghcmod_use_basedir', '')
+function! intero#basedir() "{{{
+  let l:use_basedir = get(g:, 'intero_use_basedir', '')
   if empty(l:use_basedir)
     return s:find_basedir()
   else
@@ -335,21 +335,21 @@ endfunction "}}}
 
 function! s:find_basedir() "{{{
   " search Cabal file
-  if !exists('b:ghcmod_basedir')
+  if !exists('b:intero_basedir')
     " `ghc-mod root` is available since v4.0.0.
     let l:dir = getcwd()
     try
       lcd `=expand('%:p:h')`
-      let b:ghcmod_basedir =
+      let b:intero_basedir =
         \ substitute(vimproc#system(['ghc-mod', '--silent', 'root']), '\n*$', '', '')
     finally
       lcd `=l:dir`
     endtry
   endif
-  return b:ghcmod_basedir
+  return b:intero_basedir
 endfunction "}}}
 
-function! ghcmod#version() "{{{
+function! intero#version() "{{{
   return [1, 3, 1]
 endfunction "}}}
 
