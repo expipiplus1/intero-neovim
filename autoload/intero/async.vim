@@ -51,4 +51,4 @@ function! s:finalize(key)
   endif
 endfunction
 
-" vim: set ts=2 sw=2 et fdm=marker:
+" vim: set ts=4 sw=4 et fdm=marker:

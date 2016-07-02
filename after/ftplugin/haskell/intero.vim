@@ -1,49 +1,14 @@
 if exists('b:did_ftplugin_intero') && b:did_ftplugin_intero
-  finish
+    finish
 endif
 let b:did_ftplugin_intero = 1
 
-if !exists('s:has_vimproc')
-  try
-    call vimproc#version()
-    let s:has_vimproc = 1
-  catch /^Vim\%((\a\+)\)\=:E117/
-    let s:has_vimproc = 0
-  endtry
-endif
-
-if !s:has_vimproc
-  echohl ErrorMsg
-  echomsg 'intero: vimproc.vim is not installed!'
-  echohl None
-  finish
-endif
-
-if !exists('s:has_ghc_mod')
-  let s:has_ghc_mod = 0
-
-  if !executable('ghc-mod')
-    call intero#util#print_error('intero: ghc-mod is not executable!')
-    finish
-  endif
-
-  let s:required_version = [5, 0, 0]
-  if !intero#util#check_version(s:required_version)
-    call intero#util#print_error(printf('intero: requires ghc-mod %s or higher', join(s:required_version, '.')))
-    finish
-  endif
-
-  let s:has_ghc_mod = 1
-endif
-
-if !s:has_ghc_mod
-  finish
-endif
+call intero#diagnostics#report()
 
 if exists('b:undo_ftplugin')
-  let b:undo_ftplugin .= ' | '
+    let b:undo_ftplugin .= ' | '
 else
-  let b:undo_ftplugin = ''
+    let b:undo_ftplugin = ''
 endif
 
 command! -buffer -nargs=0 -bang interoType call intero#command#type(<bang>0)
@@ -60,23 +25,23 @@ command! -buffer -nargs=0 -bang interoLintAsync call intero#command#async_make('
 command! -buffer -nargs=0 -bang interoCheckAndLintAsync call intero#command#check_and_lint_async(<bang>0)
 command! -buffer -nargs=0 -bang interoExpand call intero#command#expand(<bang>0)
 let b:undo_ftplugin .= join(map([
-      \ 'interoType',
-      \ 'interoTypeInsert',
-      \ 'interoSplitFunCase',
-      \ 'interoSigCodegen',
-      \ 'interoInfo',
-      \ 'interoInfoPreview',
-      \ 'interoTypeClear',
-      \ 'interoCheck',
-      \ 'interoLint',
-      \ 'interoCheckAsync',
-      \ 'interoLintAsync',
-      \ 'interoCheckAndLintAsync',
-      \ 'interoExpand'
-      \ ], '"delcommand " . v:val'), ' | ')
+            \ 'interoType',
+            \ 'interoTypeInsert',
+            \ 'interoSplitFunCase',
+            \ 'interoSigCodegen',
+            \ 'interoInfo',
+            \ 'interoInfoPreview',
+            \ 'interoTypeClear',
+            \ 'interoCheck',
+            \ 'interoLint',
+            \ 'interoCheckAsync',
+            \ 'interoLintAsync',
+            \ 'interoCheckAndLintAsync',
+            \ 'interoExpand'
+            \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
 " Ensure syntax highlighting for intero#detect_module()
 syntax sync fromstart
 
-" vim: set ts=2 sw=2 et fdm=marker:
+" vim: set ts=4 sw=4 et fdm=marker:
