@@ -5,6 +5,8 @@ let b:did_ftplugin_intero = 1
 
 call intero#diagnostics#ensure_intero_installed()
 
+call intero#run#start_process()
+
 if exists('b:undo_ftplugin')
     let b:undo_ftplugin .= ' | '
 else
