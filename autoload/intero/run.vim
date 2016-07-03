@@ -1,23 +1,3 @@
-function! intero#run#start_process()
-    if exists('g:intero_process_id')
-        " echom "Intero already running, process id: " . g:intero_process_id
-        return
-    else
-        let l:handler = s:InteroHandler.new()
-        let l:job_id = jobstart(['stack', 'ghci', '--with-ghc', 'intero'], l:handler)
-        if l:job_id == -1
-            echom "Intero is not executable."
-        elseif l:job_id == 0
-            echom "job table is full, or invalid arguments"
-        else
-            " echom "Intero started, Process Id: " . l:job_id
-            let g:intero_process_id = l:job_id
-            let g:intero_handler = l:handler
-            call intero#run#load_current_module()
-        endif
-    endif
-endfunction
-
 function! intero#run#flush_handler()
     let l:foo = 1
 

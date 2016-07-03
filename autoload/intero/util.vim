@@ -39,4 +39,11 @@ function! intero#util#tocol(line, col) "{{{
   return l:len + 1
 endfunction "}}}
 
+function! intero#util#path_to_module(path)
+    " Converts a path like `src/Main/Foo/Bar.hs` to Main.Foo.Bar
+    return substitute(
+        \ join(split(substitute(a:path, "^[A-Z ]*/", "", ""), '/') , '.'),
+        \ "\.hs", "", "")
+endfunction
+
 " vim: set ts=4 sw=4 et fdm=marker:
