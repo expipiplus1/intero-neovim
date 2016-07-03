@@ -1,8 +1,18 @@
 # `intero-neovim`
-[![Build Status](https://api.travis-ci.org/eagletmt/ghcmod-vim.svg)](https://travis-ci.org/eagletmt/ghcmod-vim)
-[![Gitter chat](https://badges.gitter.im/eagletmt/ghcmod-vim.png)](https://gitter.im/eagletmt/ghcmod-vim)
 
 A fork of `ghcmod-vim` for `intero`.
+
+## Current Status
+
+1. Intero is installed in the local stack project if it isn't detected.
+2. Neovim keeps an internal intero process running and communicates with it in a primitive manner
+3. Can load current module and get the type at point
+
+## Immediate Todos
+
+1. Fix the buffer behavior so it's more predictable and easier to use
+2. Better module loading/prediction.
+3. Write the rest of the plugin
 
 -----
 
