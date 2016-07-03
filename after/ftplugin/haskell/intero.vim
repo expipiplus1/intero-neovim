@@ -11,12 +11,10 @@ else
     let b:undo_ftplugin = ''
 endif
 
-command! -buffer -nargs=0 -bang InteroStart call intero#process#start()
 command! -buffer -nargs=0 -bang InteroKill call intero#process#kill()
 command! -buffer -nargs=0 -bang InteroOpen call intero#process#open()
 command! -buffer -nargs=0 -bang InteroHide call intero#process#hide()
 
-nnoremap <Leader>his :InteroStart<CR>
 nnoremap <Leader>hio :InteroOpen<CR>
 nnoremap <Leader>hik :InteroKill<CR>
 nnoremap <Leader>hic :InteroHide<CR>

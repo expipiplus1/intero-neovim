@@ -25,15 +25,16 @@ endfunction
 function! intero#process#start()
     " Starts an intero terminal buffer, initially only occupying a small area.
     " Returns the intero buffer id.
-    let s:buffer_id = s:start_buffer(10)
-    echom "Buffer ID: " . s:buffer_id
-    return s:buffer_id
+    let g:intero_buffer_id = s:start_buffer(10)
+    echom "Buffer ID: " . g:intero_buffer_id
+    return g:intero_buffer_id
 endfunction
 
 function! intero#process#kill()
     " Kills the intero buffer, if it exists.
-    if exists('s:buffer_id')
-        exe 'bd! ' . s:buffer_id
+    if exists('g:intero_buffer_id')
+        exe 'bd! ' . g:intero_buffer_id
+        unlet g:intero_buffer_id
     else
         echo "No Intero process loaded."
     endif
@@ -46,22 +47,24 @@ endfunction
 
 function! intero#process#open()
     " Opens the Intero REPL. If the REPL isn't currently running, then this
-    " creates it.
-    if exists('s:buffer_id')
+    " creates it. If the REPL is already running, this is a noop.
+    let l:intero_win = s:get_intero_window()
+    if l:intero_win != -1
+        return
+    elseif exists('g:intero_buffer_id')
         let l:current_window = winnr()
         call s:open_window(10)
-        exe 'buffer ' . s:buffer_id
+        exe 'buffer ' . g:intero_buffer_id
         exe l:current_window . 'wincmd w'
     else
         call intero#process#start()
-        call intero#process#open()
     endif
 endfunction
 
 function! intero#process#load_current_module()
     " Loads the current module into the active Intero buffer. If no buffer
     " exists, it creates it.
-    if exists('s:buffer_id')
+    if exists('g:intero_buffer_id')
         let l:current_module = intero#util#path_to_module(expand('%'))
         let l:intero_window = s:get_intero_window()
         exe l:intero_window . 'wincmd w'
@@ -117,7 +120,7 @@ function! s:get_intero_window()
 endfunction
 
 function! s:open_buffer(height)
-    if exists('s:buffer_id')
+    if exists('g:intero_buffer_id')
         
     else
 
