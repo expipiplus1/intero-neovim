@@ -39,15 +39,39 @@ function! intero#process#kill()
     endif
 endfunction
 
+function! intero#process#hide()
+    " Hides the current buffer without killing the process.
+    call s:hide_buffer()
+endfunction
+
+function! intero#process#open()
+    " Opens the Intero REPL. If the REPL isn't currently running, then this
+    " creates it.
+    if exists('s:buffer_id')
+        let l:current_window = winnr()
+        call s:open_window(10)
+        exe 'buffer ' . s:buffer_id
+        exe l:current_window . 'wincmd w'
+    else
+        call intero#process#start()
+        call intero#process#open()
+    endif
+endfunction
+
 function! intero#process#load_current_module()
     " Loads the current module into the active Intero buffer. If no buffer
     " exists, it creates it.
     if exists('s:buffer_id')
         let l:current_module = intero#util#path_to_module(expand('%'))
-        let l:current_buffer = bufnr('%')
-        echo "finish meee"
+        let l:intero_window = s:get_intero_window()
+        exe l:intero_window . 'wincmd w'
+        if mode() != 'i'
+            call feedkeys('i')
+        endif
+        call feedkeys(":load " . l:current_module . "\<ENTER>")
     else
         call intero#process#start()
+        sleep '10m'
         call intero#process#load_current_module()
     endif
 endfunction
@@ -55,10 +79,17 @@ endfunction
 """"""""""
 " Private:
 """"""""""
+function! s:send_repl(cmd)
+    " Finds the REPL buffer and sends a:cmd to the buffer.
+    call feedkeys("\<C-\>\<C-n>\<C-w>k")
+endfunction
+
 function! s:start_buffer(height)
     " Starts an Intero REPL in a split below the current buffer. Returns the
     " ID of the buffer.
     exe 'below ' . a:height . ' split'
+    set bufhidden=hide
+    set hidden
     terminal! stack ghci --with-ghc intero
     let l:buffer_id = bufnr('%')
     call feedkeys("\<C-\>\<C-n>\<C-w>k")
