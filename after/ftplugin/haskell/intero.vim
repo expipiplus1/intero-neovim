@@ -26,15 +26,21 @@ command! -buffer -nargs=0 -bang InteroEval call intero#repl#eval()
 " Gets the type at the current point
 command! -buffer -nargs=0 -bang InteroType call intero#repl#type()
 
-nnoremap <Leader>hio :InteroOpen<CR>
-nnoremap <Leader>hik :InteroKill<CR>
-nnoremap <Leader>hic :InteroHide<CR>
-nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
-nnoremap <Leader>hie :InteroEval<CR>
-nnoremap <Leader>hit :InteroType<CR>
+" Some recommended keymaps:
+" nnoremap <Leader>hio :InteroOpen<CR>
+" nnoremap <Leader>hik :InteroKill<CR>
+" nnoremap <Leader>hic :InteroHide<CR>
+" nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
+" nnoremap <Leader>hie :InteroEval<CR>
+" nnoremap <Leader>hit :InteroType<CR>
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
+            \ 'InteroOpen',
+            \ 'InteroKill',
+            \ 'InteroHide',
+            \ 'InteroLoadCurrentModule',
+            \ 'InteroLoadEval',
             \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
