@@ -1,3 +1,27 @@
+""""""""""
+" Util:
+"
+" This file contains functions that are useful for multiple modules, but that
+" don't fit specifically in any one.
+"""""""""
+
+function! intero#util#get_intero_window()
+    " Returns the window ID that the Intero process is on, or -1 if it isn't
+    " found.
+    return bufwinnr('stack ghci --with-ghc intero')
+endfunction
+
+function! intero#util#path_to_module(path)
+    " Converts a path like `src/Main/Foo/Bar.hs` to Main.Foo.Bar
+    return substitute(
+        \ join(split(substitute(a:path, "^[A-Z ]*/", "", ""), '/') , '.'),
+        \ "\.hs", "", "")
+endfunction
+
+""""""""""
+" The following functions were copied from ghcmod-vim.
+""""""""""
+
 function! intero#util#print_warning(msg) "{{{
   echohl WarningMsg
   echomsg a:msg
@@ -38,12 +62,5 @@ function! intero#util#tocol(line, col) "{{{
   endfor
   return l:len + 1
 endfunction "}}}
-
-function! intero#util#path_to_module(path)
-    " Converts a path like `src/Main/Foo/Bar.hs` to Main.Foo.Bar
-    return substitute(
-        \ join(split(substitute(a:path, "^[A-Z ]*/", "", ""), '/') , '.'),
-        \ "\.hs", "", "")
-endfunction
 
 " vim: set ts=4 sw=4 et fdm=marker:
