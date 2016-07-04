@@ -24,7 +24,17 @@ endfunction
 function! intero#repl#load_current_module()
     " Loads the current module, inferred from the given filename.
     call intero#repl#eval(':l Main')
-    echomsg s:get_line_repl()
+    echo s:get_line_repl()
+endfunction
+
+function! intero#repl#type()
+    " Gets the type at the current point.
+    let l:line = line('.')
+    let l:col = intero#util#getcol()
+    let l:module = intero#util#path_to_module(expand('%'))
+    call intero#repl#eval(
+        \ join([':type-at', l:module, l:line, l:col, l:line, l:col, 'it'], ' '))
+    " echo s:get_line_repl()
 endfunction
 
 """"""""""
@@ -36,7 +46,6 @@ function! s:send(str)
         echomsg "Intero not running."
         return
     endif
-
     call jobsend(g:intero_job_id, add([a:str], ''))
 endfunction
 
@@ -49,7 +58,8 @@ function! s:get_line_repl()
 
     if l:i_win == -1
         " Intero window not found. Open and close it.
-        let l:i_win = intero#process#open()
+        call intero#process#open()
+        let l:i_win = intero#util#get_intero_window()
         exe 'silent! ' . l:i_win . ' wincmd w'
         let l:ret = s:get_line(1)
         call intero#process#hide()

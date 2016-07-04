@@ -23,12 +23,15 @@ command! -buffer -nargs=0 -bang InteroHide call intero#process#hide()
 command! -buffer -nargs=0 -bang InteroLoadCurrentModule call intero#repl#load_current_module()
 " Prompts user for a string to eval
 command! -buffer -nargs=0 -bang InteroEval call intero#repl#eval()
+" Gets the type at the current point
+command! -buffer -nargs=0 -bang InteroType call intero#repl#type()
 
 nnoremap <Leader>hio :InteroOpen<CR>
 nnoremap <Leader>hik :InteroKill<CR>
 nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 nnoremap <Leader>hie :InteroEval<CR>
+nnoremap <Leader>hit :InteroType<CR>
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
@@ -36,5 +39,6 @@ let b:undo_ftplugin .= join(map([
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
 call intero#process#start()
+call intero#repl#load_current_module()
 
 " vim: set ts=4 sw=4 et fdm=marker:
