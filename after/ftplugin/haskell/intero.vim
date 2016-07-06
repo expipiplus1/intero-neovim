@@ -25,6 +25,7 @@ command! -buffer -nargs=0 -bang InteroLoadCurrentModule call intero#repl#load_cu
 command! -buffer -nargs=0 -bang InteroEval call intero#repl#eval()
 " Gets the type at the current point
 command! -buffer -nargs=0 -bang InteroType call intero#repl#type()
+command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_response()
 
 " Some recommended keymaps:
 nnoremap <Leader>hio :InteroOpen<CR>
@@ -33,6 +34,7 @@ nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
+nnoremap <Leader>hip :InteroResponse<CR>
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
