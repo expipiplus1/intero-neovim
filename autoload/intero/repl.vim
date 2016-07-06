@@ -36,7 +36,9 @@ function! intero#repl#type()
 endfunction
 
 function! intero#repl#get_last_response()
-    echom s:get_last_response()
+    for r in s:get_last_response()
+        echom r
+    endfor
 endfunction
 
 """"""""""
@@ -47,7 +49,7 @@ function! s:get_last_response()
     " Returns the previous response.
     let l:last_line = s:get_last_line()
     let l:lines = split(s:get_prev_matching(l:last_line[0:-1]), '\n')
-    return join(l:lines[0:-2], "\n")
+    return l:lines[0:-2]
 endfunction
 
 function! s:get_prev_matching(str)
