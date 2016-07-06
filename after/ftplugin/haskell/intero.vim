@@ -28,13 +28,13 @@ command! -buffer -nargs=0 -bang InteroType call intero#repl#type()
 command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_response()
 
 " Some recommended keymaps:
-nnoremap <Leader>hio :InteroOpen<CR>
-nnoremap <Leader>hik :InteroKill<CR>
-nnoremap <Leader>hic :InteroHide<CR>
-nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
-nnoremap <Leader>hie :InteroEval<CR>
-nnoremap <Leader>hit :InteroType<CR>
-nnoremap <Leader>hip :InteroResponse<CR>
+" nnoremap <Leader>hio :InteroOpen<CR>
+" nnoremap <Leader>hik :InteroKill<CR>
+" nnoremap <Leader>hic :InteroHide<CR>
+" nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
+" nnoremap <Leader>hie :InteroEval<CR>
+" nnoremap <Leader>hit :InteroType<CR>
+" nnoremap <Leader>hip :InteroResponse<CR>
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
@@ -43,6 +43,7 @@ let b:undo_ftplugin .= join(map([
             \ 'InteroHide',
             \ 'InteroLoadCurrentModule',
             \ 'InteroLoadEval',
+            \ 'InteroResponse',
             \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 

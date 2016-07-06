@@ -2,11 +2,13 @@
 
 Currently provides (primitive) type at point, evaluation, and module loading.
 I have no idea what I am doing with vimscript, so if you know what's up, let's
-collaborate!
+collaborate! PRs, issues, and random feedback are all welcome.
 
 ## Installing
 
-This plugin should be pathogen, vundle, etc. compatible.
+This plugin should be pathogen, vundle, etc. compatible. However, while that's
+the case, I recommend cloning this repository and managing it yourself. It's
+not stable at all, and you don't want this changing out from under you.
 
 ## Usage
 
@@ -20,7 +22,12 @@ nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
+nnoremap <Leader>hip :InteroResponse<CR>
 ```
+
+Currently, the only way to use the plugin is to open the REPL and watch the
+terminal output. Echoing output isn't working like I want it to.
+
 
 The following commands are available:
 
@@ -28,6 +35,10 @@ The following commands are available:
 
 This prompts the user to input a string, which gets sent to the REPL and
 evaluated by Intero.
+
+### `InteroResponse`
+
+This retrieves the last thing that was evaluated by `intero`.
 
 ### `InteroType`
 
