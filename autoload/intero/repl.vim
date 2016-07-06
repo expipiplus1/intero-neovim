@@ -31,8 +31,9 @@ function! intero#repl#type()
     let l:line = line('.')
     let l:col = intero#util#getcol()
     let l:module = intero#util#path_to_module(expand('%'))
+    let l:identifier = intero#util#get_haskell_identifier()
     call intero#repl#eval(
-        \ join([':type-at', l:module, l:line, l:col, l:line, l:col, 'it'], ' '))
+        \ join([':type-at', l:module, l:line, l:col, l:line, l:col, l:identifier], ' '))
 endfunction
 
 function! intero#repl#get_last_response()

@@ -21,6 +21,18 @@ endfunction
 """"""""""
 " The following functions were copied from ghcmod-vim.
 """"""""""
+"
+" Return the current haskell identifier
+function! intero#util#get_haskell_identifier()
+    let c = col ('.')-1
+    let l = line('.')
+    let ll = getline(l)
+    let ll1 = strpart(ll,0,c)
+    let ll1 = matchstr(ll1,"[a-zA-Z0-9_'.]*$")
+    let ll2 = strpart(ll,c,strlen(ll)-c+1)
+    let ll2 = matchstr(ll2,"^[a-zA-Z0-9_'.]*")
+    return ll1.ll2
+endfunction "}}}
 
 function! intero#util#print_warning(msg) "{{{
     echohl WarningMsg
