@@ -3,7 +3,7 @@
 "
 " This file contains functions for working with the Intero process. This
 " includes ensuring that Intero is installed, starting/killing the
-" process, hiding/showing the REPL, and loading the current module.
+" process, and hiding/showing the REPL.
 """""""""""
 
 function! intero#process#ensure_installed()
@@ -54,6 +54,7 @@ function! intero#process#open()
         let l:current_window = winnr()
         silent! call s:open_window(10)
         exe 'silent! buffer ' . g:intero_buffer_id
+        normal! G
         exe 'silent! ' . l:current_window . 'wincmd w'
     else
         call intero#process#start()
@@ -93,4 +94,3 @@ function! s:hide_buffer()
         exec 'silent! ' . l:window_number . 'wincmd c'
     endif
 endfunction
-
