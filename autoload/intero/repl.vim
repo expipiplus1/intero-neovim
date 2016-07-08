@@ -26,14 +26,24 @@ function! intero#repl#load_current_module()
     call intero#repl#eval(':l ' . intero#util#path_to_module(expand('%')))
 endfunction
 
-function! intero#repl#type()
+function! intero#repl#type(generic)
     " Gets the type at the current point.
     let l:line = line('.')
     let l:col = intero#util#getcol()
     let l:module = intero#util#path_to_module(expand('%'))
-    let l:identifier = intero#util#get_haskell_identifier()
+    if a:generic
+        let l:identifier = intero#util#get_haskell_identifier()
+    else
+        let l:identifier = "it"
+    endif
+
     call intero#repl#eval(
         \ join([':type-at', l:module, l:line, l:col, l:line, l:col, l:identifier], ' '))
+endfunction
+
+function! intero#repl#info()
+    let l:ident = intero#util#get_haskell_identifier()
+    call intero#repl#eval(':info ' . l:ident)
 endfunction
 
 function! intero#repl#get_last_response()

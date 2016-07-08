@@ -7,6 +7,7 @@ forewarned!
 
 - `InteroType` uses the identifier name instead of `it`, allowing for more
 general type information.
+- `InteroInfo` added
 
 ## 2016-07-05
 

@@ -23,8 +23,13 @@ command! -buffer -nargs=0 -bang InteroHide call intero#process#hide()
 command! -buffer -nargs=0 -bang InteroLoadCurrentModule call intero#repl#load_current_module()
 " Prompts user for a string to eval
 command! -buffer -nargs=0 -bang InteroEval call intero#repl#eval()
+" Gets the specific type at the current point
+command! -buffer -nargs=0 -bang InteroSpecificType call intero#repl#type(0)
 " Gets the type at the current point
-command! -buffer -nargs=0 -bang InteroType call intero#repl#type()
+command! -buffer -nargs=0 -bang InteroGenericType call intero#repl#type(1)
+" Gets info for the identifier at the current point
+command! -buffer -nargs=0 -bang InteroInfo call intero#repl#info()
+" Echo the last response from the REPL
 command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_response()
 
 " Some recommended keymaps:
@@ -33,7 +38,8 @@ command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_respons
 " nnoremap <Leader>hic :InteroHide<CR>
 " nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 " nnoremap <Leader>hie :InteroEval<CR>
-" nnoremap <Leader>hit :InteroType<CR>
+" nnoremap <Leader>hit :InteroGenericType<CR>
+" nnoremap <Leader>hii :InteroInfo<CR>
 " nnoremap <Leader>hip :InteroResponse<CR>
 
 let b:undo_ftplugin .= join(map([
@@ -51,3 +57,5 @@ call intero#process#start()
 call intero#repl#load_current_module()
 
 " vim: set ts=4 sw=4 et fdm=marker:
+"
+call intero#repl#eval(":set +c")
