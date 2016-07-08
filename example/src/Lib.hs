@@ -4,3 +4,8 @@ module Lib
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
+
+foo :: String -> Int
+foo = length
+  where
+    bar = 2

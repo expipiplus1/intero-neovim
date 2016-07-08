@@ -19,6 +19,7 @@ function! intero#repl#eval(...)
     endif
 
     call s:send(l:eval)
+    call intero#repl#get_last_response()
 endfunction
 
 function! intero#repl#load_current_module()
@@ -33,16 +34,13 @@ function! intero#repl#type()
     let l:module = intero#util#path_to_module(expand('%'))
     call intero#repl#eval(
         \ join([':type-at', l:module, l:line, l:col, l:line, l:col, 'it'], ' '))
+    call intero#repl#get_last_response()
 endfunction
 
 function! intero#repl#get_last_response()
     for r in s:get_last_response()
         echom r
     endfor
-endfunction
-
-function! intero#repl#on_response(foo)
-    echo a:foo
 endfunction
 
 """"""""""
@@ -126,6 +124,7 @@ function! s:get_line_repl(n)
     " Retrieves the second to last line from the Intero repl. The most recent
     " line will always be a prompt.
     call s:switch_to_repl()
+    redraw
     let l:ret = s:get_line(a:n)
     call s:return_from_repl()
     return l:ret

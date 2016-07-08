@@ -75,6 +75,7 @@ function! s:start_buffer(height)
     set hidden
     let l:buffer_id = bufnr('%')
     let g:intero_job_id = b:terminal_job_id
+    " call jobattach(g:intero_job_id, { "on_stdout": echo })
     quit
     call feedkeys("\<ESC>")
     return l:buffer_id
