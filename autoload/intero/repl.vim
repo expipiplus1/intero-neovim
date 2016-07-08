@@ -41,6 +41,10 @@ function! intero#repl#get_last_response()
     endfor
 endfunction
 
+function! intero#repl#on_response(foo)
+    echo a:foo
+endfunction
+
 """"""""""
 " Private:
 """"""""""
@@ -78,6 +82,11 @@ function! s:send(str)
         return
     endif
     call jobsend(g:intero_job_id, add([a:str], ''))
+endfunction
+
+function! s:repl_hidden()
+    " Returns whether or not the Intero repl is hidden.
+    return -1 == intero#util#get_intero_window()
 endfunction
 
 function! s:switch_to_repl()
