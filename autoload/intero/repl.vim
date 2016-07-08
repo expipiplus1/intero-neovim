@@ -19,6 +19,7 @@ function! intero#repl#eval(...)
     endif
 
     call s:send(l:eval)
+    call intero#repl#get_last_response()
 endfunction
 
 function! intero#repl#load_current_module()
@@ -91,6 +92,11 @@ function! s:send(str)
     call jobsend(g:intero_job_id, add([a:str], ''))
 endfunction
 
+function! s:repl_hidden()
+    " Returns whether or not the Intero repl is hidden.
+    return -1 == intero#util#get_intero_window()
+endfunction
+
 function! s:switch_to_repl()
     " Switches to the REPL. Use with return_from_repl.
     let s:current_window = winnr()
@@ -128,6 +134,7 @@ function! s:get_line_repl(n)
     " Retrieves the second to last line from the Intero repl. The most recent
     " line will always be a prompt.
     call s:switch_to_repl()
+    redraw
     let l:ret = s:get_line(a:n)
     call s:return_from_repl()
     return l:ret

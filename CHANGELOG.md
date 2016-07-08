@@ -3,11 +3,13 @@
 There's no version right now. `master` is going to be evolving quickly. Be
 forewarned!
 
-## 2016-07-06
+## 2016-07-08
 
 - `InteroType` uses the identifier name instead of `it`, allowing for more
 general type information.
 - `InteroInfo` added
+- Fixes the `buftype` issue described in [this issue](https://github.com/parsonsmatt/intero-neovim/issues/9)
+- Removes the `InteroDiagnostic` command reference
 
 ## 2016-07-05
 

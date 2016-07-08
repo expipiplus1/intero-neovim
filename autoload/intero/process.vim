@@ -69,13 +69,13 @@ function! s:start_buffer(height)
     " Starts an Intero REPL in a split below the current buffer. Returns the
     " ID of the buffer.
     exe 'below ' . a:height . ' split'
+    terminal! stack ghci --with-ghc intero
     set bufhidden=hide
     set noswapfile
-    set buftype=nofile
     set hidden
-    terminal! stack ghci --with-ghc intero
     let l:buffer_id = bufnr('%')
     let g:intero_job_id = b:terminal_job_id
+    " call jobattach(g:intero_job_id, { "on_stdout": echo })
     quit
     call feedkeys("\<ESC>")
     return l:buffer_id
