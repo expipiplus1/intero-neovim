@@ -73,7 +73,21 @@ endfunction
 function! s:on_response()
     let l:mode = mode()
     if ! (l:mode =~ "c")
-        call intero#repl#get_last_response()
+        let l:current_response = intero#repl#get_last_response()
+        if !exists('s:previous_response')
+            let s:previous_response = l:current_response
+            for r in l:current_response
+                echom r
+            endfor
+        else 
+            if l:current_response != s:previous_response
+                let s:previous_response = l:current_response
+                for r in s:previous_response
+                    echom r
+                endfor
+                echo join(s:previous_response, "\n")
+            endif
+        endif
     endif
 endfunction
 

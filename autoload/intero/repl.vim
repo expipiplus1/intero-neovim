@@ -19,7 +19,6 @@ function! intero#repl#eval(...)
     endif
 
     call s:send(l:eval)
-    call intero#repl#get_last_response()
 endfunction
 
 function! intero#repl#load_current_module()
@@ -48,9 +47,7 @@ function! intero#repl#info()
 endfunction
 
 function! intero#repl#get_last_response()
-    for r in s:get_last_response()
-        echom r
-    endfor
+    return s:get_last_response()
 endfunction
 
 """"""""""
