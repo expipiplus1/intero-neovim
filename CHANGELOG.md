@@ -3,6 +3,10 @@
 There's no version right now. `master` is going to be evolving quickly. Be
 forewarned!
 
+## 2016-07-09
+
+- Fixed the REPL echo stuff.
+
 ## 2016-07-08
 
 - `InteroType` uses the identifier name instead of `it`, allowing for more

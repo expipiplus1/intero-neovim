@@ -22,12 +22,9 @@ nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
+nnoremap <Leader>hit :InteroTypeSpecific<CR>
 nnoremap <Leader>hip :InteroResponse<CR>
 ```
-
-Currently, the only way to use the plugin is to open the REPL and watch the
-terminal output. Echoing output isn't working like I want it to.
-
 
 The following commands are available:
 
@@ -43,6 +40,10 @@ This retrieves the last thing that was evaluated by `intero`.
 ### `InteroType`
 
 This gets the type at the current point.
+
+### `InteroTypeSpecific`
+
+This gets the type at the current point without generalizing the term.
 
 ### `InteroLoadCurrentModule`
 
