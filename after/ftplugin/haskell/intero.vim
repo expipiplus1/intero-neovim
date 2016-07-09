@@ -24,7 +24,7 @@ command! -buffer -nargs=0 -bang InteroLoadCurrentModule call intero#repl#load_cu
 " Prompts user for a string to eval
 command! -buffer -nargs=0 -bang InteroEval call intero#repl#eval()
 " Gets the specific type at the current point
-command! -buffer -nargs=0 -bang InteroSpecificType call intero#repl#type(0)
+command! -buffer -nargs=0 -bang InteroType call intero#repl#type(0)
 " Gets the type at the current point
 command! -buffer -nargs=0 -bang InteroGenericType call intero#repl#type(1)
 " Gets info for the identifier at the current point
@@ -48,14 +48,11 @@ let b:undo_ftplugin .= join(map([
             \ 'InteroKill',
             \ 'InteroHide',
             \ 'InteroLoadCurrentModule',
-            \ 'InteroLoadEval',
+            \ 'InteroEval',
             \ 'InteroResponse',
             \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
 call intero#process#start()
-call intero#repl#load_current_module()
 
 " vim: set ts=4 sw=4 et fdm=marker:
-"
-call intero#repl#eval(":set +c")
