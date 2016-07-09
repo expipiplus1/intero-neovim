@@ -71,7 +71,10 @@ function! s:term_buffer(job_id, data, event)
 endfunction
 
 function! s:on_response()
-    call intero#repl#get_last_response()
+    let l:mode = mode()
+    if ! (l:mode =~ "c")
+        call intero#repl#get_last_response()
+    endif
 endfunction
 
 function! s:start_buffer(height)
