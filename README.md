@@ -22,14 +22,17 @@ This plugin provides an integration with Intero via Neovim's terminal and
 asynchronous job control. You might like the following shortcuts:
 
 ```
+" Process management:
 nnoremap <Leader>hio :InteroOpen<CR>
 nnoremap <Leader>hik :InteroKill<CR>
 nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
+
+" REPL commands
 nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
 nnoremap <Leader>hit :InteroGenericType<CR>
-nnoremap <Leader>hip :InteroResponse<CR>
+nnoremap <Leader>hii :InteroInfo<CR>
 ```
 
 ![REPL demo](demo-repl-lo.gif)

@@ -3,6 +3,10 @@
 There's no version right now. `master` is going to be evolving quickly. Be
 forewarned!
 
+## 2016-07-10
+
+- Improved echoing, fixed a flicker and performance issue.
+
 ## 2016-07-09
 
 - Fixed the REPL echo stuff.

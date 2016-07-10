@@ -30,7 +30,6 @@ command! -buffer -nargs=0 -bang InteroGenericType call intero#repl#type(1)
 " Gets info for the identifier at the current point
 command! -buffer -nargs=0 -bang InteroInfo call intero#repl#info()
 " Echo the last response from the REPL
-command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_response()
 
 " Some recommended keymaps:
 " nnoremap <Leader>hio :InteroOpen<CR>
@@ -40,16 +39,15 @@ command! -buffer -nargs=0 -bang InteroResponse call intero#repl#get_last_respons
 " nnoremap <Leader>hie :InteroEval<CR>
 " nnoremap <Leader>hit :InteroGenericType<CR>
 " nnoremap <Leader>hii :InteroInfo<CR>
-" nnoremap <Leader>hip :InteroResponse<CR>
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
+            \ 'InteroGenericType',
             \ 'InteroOpen',
             \ 'InteroKill',
             \ 'InteroHide',
             \ 'InteroLoadCurrentModule',
             \ 'InteroEval',
-            \ 'InteroResponse',
             \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
