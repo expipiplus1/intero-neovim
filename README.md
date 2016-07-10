@@ -10,6 +10,12 @@ This plugin should be pathogen, vundle, etc. compatible. However, while that's
 the case, I recommend cloning this repository and managing it yourself. It's
 not stable at all, and you don't want this changing out from under you.
 
+After you've installed the plugin, it'll keep your `intero` installs setup for
+you. I recommend adding `intero-0.1.16` to your `stack.yaml` build-depends to
+ensure you get the newer version.
+
+![Demo of Installation](demo-install-lo.gif)
+
 ## Usage
 
 This plugin provides an integration with Intero via Neovim's terminal and
@@ -22,9 +28,11 @@ nnoremap <Leader>hic :InteroHide<CR>
 nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
 nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
-nnoremap <Leader>hit :InteroTypeSpecific<CR>
+nnoremap <Leader>hit :InteroGenericType<CR>
 nnoremap <Leader>hip :InteroResponse<CR>
 ```
+
+![REPL demo](demo-repl-lo.gif)
 
 The following commands are available:
 
@@ -37,17 +45,17 @@ evaluated by Intero.
 
 This retrieves the last thing that was evaluated by `intero`.
 
-### `InteroType`
+### `InteroGenericType`
 
 This gets the type at the current point.
 
-### `InteroTypeSpecific`
+### `InteroType`
 
 This gets the type at the current point without generalizing the term.
 
 ### `InteroLoadCurrentModule`
 
-This loads the current module.
+This loads the current module. Should not be necessary if you're using 0.1.16 version of Intero.
 
 ### `InteroOpen`
 
