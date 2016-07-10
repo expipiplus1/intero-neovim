@@ -18,12 +18,14 @@ function! intero#repl#eval(...)
         return
     endif
 
+    let g:intero_should_echo = 1
     call s:send(l:eval)
 endfunction
 
 function! intero#repl#load_current_module()
     " Loads the current module, inferred from the given filename.
-    call intero#repl#eval(':l ' . intero#util#path_to_module(expand('%')))
+    let g:intero_should_echo = 1
+    call s:send(':l ' . intero#util#path_to_module(expand('%')))
 endfunction
 
 function! intero#repl#type(generic)
@@ -57,19 +59,17 @@ endfunction
 function! s:get_last_response()
     " Returns the previous response.
     let l:last_line = s:get_last_line()
-    let l:lines = split(s:get_prev_matching(l:last_line[0:-1]), '\n')
+    let l:lines = s:get_prev_matching(l:last_line[0:-1])
     return l:lines[0:-2]
 endfunction
 
 function! s:get_prev_matching(str)
     call s:switch_to_repl()
 
-    normal! GV
-    let l:i_save = @i
-    
-    exe "silent! normal! ?" . a:str . "\<CR>\"iY"
-    let l:ret = @i
-    let @i = l:i_save
+    let l:end = line('$')
+    call cursor(l:end - 1, 0)
+    let l:go_up = search(a:str, 'bn')
+    let l:ret = getline(l:go_up + 1, l:end)
 
     call s:return_from_repl()
 
@@ -77,7 +77,7 @@ function! s:get_prev_matching(str)
 endfunction
 
 function! s:get_last_line()
-    return s:get_line_repl(0)
+    return join(s:get_line_repl(0))
 endfunction
 
 function! s:send(str)
@@ -130,27 +130,6 @@ endfunction
 function! s:get_line_repl(n)
     " Retrieves the second to last line from the Intero repl. The most recent
     " line will always be a prompt.
-    call s:switch_to_repl()
-    let l:ret = s:get_line(a:n)
-    call s:return_from_repl()
-    return l:ret
-endfunction
-
-function! s:get_line(n)
-    " Grabs the line `n` from the current buffer.
-    if a:n < 1
-        let l:move = ''
-    else
-        let l:move = a:n . 'k'
-    endif
-    try
-        let l:save = @i
-        edit
-        exec 'normal! G' . l:move . '"iyyG'
-        let l:line = @i
-    finally
-        let @i = l:save
-    endtry
-
-    return substitute(l:line, "\%x00", "", "g")
+    let l:last_line = pyeval('len(vim.buffers[' . g:intero_buffer_id . '])')
+    return getbufline(g:intero_buffer_id, l:last_line - a:n, l:last_line)
 endfunction

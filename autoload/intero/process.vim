@@ -72,37 +72,43 @@ endfunction
 
 function! s:on_response()
     let l:mode = mode()
-    if ! (l:mode =~ "c")
-        let l:current_response = intero#repl#get_last_response()
-        if !exists('s:previous_response')
-            let s:previous_response = l:current_response
-            for r in l:current_response
-                echom r
-            endfor
-        else 
-            if l:current_response != s:previous_response
-                let s:previous_response = l:current_response
-                for r in s:previous_response
-                    echom r
-                endfor
-                echo join(s:previous_response, "\n")
-            endif
-        endif
+
+    if ! (exists('g:intero_should_echo') && g:intero_should_echo)
+        return
+    endif
+
+    if l:mode =~ "c" || l:mode =~ "t"
+        return
+    endif
+
+    let l:current_response = intero#repl#get_last_response()
+
+    if !exists('s:previous_response')
+        let s:previous_response = l:current_response
+    endif
+    
+    if l:current_response != s:previous_response
+        let s:previous_response = l:current_response
+        for r in s:previous_response
+            echom r
+        endfor
+        echo join(s:previous_response, "\n")
+        let g:intero_should_echo = 0
     endif
 endfunction
 
 function! s:start_buffer(height)
     " Starts an Intero REPL in a split below the current buffer. Returns the
     " ID of the buffer.
-    exe '10new'
-    let l:opts = { 'on_stdout': function('s:term_buffer') }
-    let g:intero_job_id = termopen("stack ghci --with-ghc intero", l:opts)
+    exe 'below ' . a:height . ' split'
+    terminal! stack ghci --with-ghc intero
     set bufhidden=hide
     set noswapfile
     set hidden
     let l:buffer_id = bufnr('%')
+    let g:intero_job_id = b:terminal_job_id
     quit
-    "call feedkeys("\<ESC>")
+    call feedkeys("\<ESC>")
     call timer_start(100, 's:on_response', {'repeat':-1})
     return l:buffer_id
 endfunction
