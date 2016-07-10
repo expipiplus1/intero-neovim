@@ -6,6 +6,7 @@ forewarned!
 ## 2016-07-10
 
 - Improved echoing, fixed a flicker and performance issue.
+- Added `InteroGoToDef` for jump-to-definition
 
 ## 2016-07-09
 

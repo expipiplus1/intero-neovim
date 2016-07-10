@@ -24,8 +24,7 @@ endfunction
 
 function! intero#repl#load_current_module()
     " Loads the current module, inferred from the given filename.
-    let g:intero_should_echo = 1
-    call s:send(':l ' . intero#util#path_to_module(expand('%')))
+    call intero#repl#eval(':l ' . intero#util#path_to_module(expand('%')))
 endfunction
 
 function! intero#repl#type(generic)
@@ -51,6 +50,16 @@ endfunction
 function! intero#repl#get_last_response()
     return s:get_last_response()
 endfunction
+
+function! intero#repl#send(str)
+    " Sends a:str to the Intero REPL.
+    if !exists('g:intero_buffer_id')
+        echomsg "Intero not running."
+        return
+    endif
+    call jobsend(g:intero_job_id, add([a:str], ''))
+endfunction
+
 
 """"""""""
 " Private:
@@ -78,15 +87,6 @@ endfunction
 
 function! s:get_last_line()
     return join(s:get_line_repl(0))
-endfunction
-
-function! s:send(str)
-    " Sends a:str to the Intero REPL.
-    if !exists('g:intero_buffer_id')
-        echomsg "Intero not running."
-        return
-    endif
-    call jobsend(g:intero_job_id, add([a:str], ''))
 endfunction
 
 function! s:repl_hidden()

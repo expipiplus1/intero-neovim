@@ -33,6 +33,9 @@ nnoremap <Leader>hie :InteroEval<CR>
 nnoremap <Leader>hit :InteroType<CR>
 nnoremap <Leader>hit :InteroGenericType<CR>
 nnoremap <Leader>hii :InteroInfo<CR>
+
+" Go to definition:
+nnoremap <Leader>hid :InteroGoToDef<CR>
 ```
 
 ![REPL demo](demo-repl-lo.gif)
@@ -55,6 +58,11 @@ This gets the type at the current point.
 ### `InteroType`
 
 This gets the type at the current point without generalizing the term.
+
+### `InteroGoToDef`
+
+Jumps to the definition of the current item if it is defined in the same
+package. Otherwise, echoes where it is defined.
 
 ### `InteroLoadCurrentModule`
 

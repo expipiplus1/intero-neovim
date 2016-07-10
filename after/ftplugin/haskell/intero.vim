@@ -29,16 +29,8 @@ command! -buffer -nargs=0 -bang InteroType call intero#repl#type(0)
 command! -buffer -nargs=0 -bang InteroGenericType call intero#repl#type(1)
 " Gets info for the identifier at the current point
 command! -buffer -nargs=0 -bang InteroInfo call intero#repl#info()
-" Echo the last response from the REPL
-
-" Some recommended keymaps:
-" nnoremap <Leader>hio :InteroOpen<CR>
-" nnoremap <Leader>hik :InteroKill<CR>
-" nnoremap <Leader>hic :InteroHide<CR>
-" nnoremap <Leader>hil :InteroLoadCurrentModule<CR>
-" nnoremap <Leader>hie :InteroEval<CR>
-" nnoremap <Leader>hit :InteroGenericType<CR>
-" nnoremap <Leader>hii :InteroInfo<CR>
+" Go to definition of item under cursor
+command! -buffer -nargs=0 -bang InteroGoToDef< call intero#loc#go_to_def()
 
 let b:undo_ftplugin .= join(map([
             \ 'InteroType',
@@ -48,6 +40,7 @@ let b:undo_ftplugin .= join(map([
             \ 'InteroHide',
             \ 'InteroLoadCurrentModule',
             \ 'InteroEval',
+            \ 'InteroGoToDef',
             \ ], '"delcommand " . v:val'), ' | ')
 let b:undo_ftplugin .= ' | unlet b:did_ftplugin_intero'
 
