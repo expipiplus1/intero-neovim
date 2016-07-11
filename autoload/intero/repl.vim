@@ -19,13 +19,12 @@ function! intero#repl#eval(...)
     endif
 
     let g:intero_should_echo = 1
-    call s:send(l:eval)
+    call intero#repl#send(l:eval)
 endfunction
 
 function! intero#repl#load_current_module()
     " Loads the current module, inferred from the given filename.
-    let g:intero_should_echo = 1
-    call s:send(':l ' . intero#util#path_to_module(expand('%')))
+    call intero#repl#eval(':l ' . intero#util#path_to_module(expand('%')))
 endfunction
 
 function! intero#repl#type(generic)
@@ -51,6 +50,16 @@ endfunction
 function! intero#repl#get_last_response()
     return s:get_last_response()
 endfunction
+
+function! intero#repl#send(str)
+    " Sends a:str to the Intero REPL.
+    if !exists('g:intero_buffer_id')
+        echomsg "Intero not running."
+        return
+    endif
+    call jobsend(g:intero_job_id, add([a:str], ''))
+endfunction
+
 
 """"""""""
 " Private:
@@ -78,15 +87,6 @@ endfunction
 
 function! s:get_last_line()
     return join(s:get_line_repl(0))
-endfunction
-
-function! s:send(str)
-    " Sends a:str to the Intero REPL.
-    if !exists('g:intero_buffer_id')
-        echomsg "Intero not running."
-        return
-    endif
-    call jobsend(g:intero_job_id, add([a:str], ''))
 endfunction
 
 function! s:repl_hidden()
@@ -130,6 +130,7 @@ endfunction
 function! s:get_line_repl(n)
     " Retrieves the second to last line from the Intero repl. The most recent
     " line will always be a prompt.
+    python import vim
     let l:last_line = pyeval('len(vim.buffers[' . g:intero_buffer_id . '])')
     return getbufline(g:intero_buffer_id, l:last_line - a:n, l:last_line)
 endfunction
