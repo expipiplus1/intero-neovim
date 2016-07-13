@@ -18,7 +18,7 @@ ensure you get the newer version.
 
 ## Usage
 
-This plugin provides an integration with Intero via Neovim's terminal and
+This plugin provides an integration with [Intero](https://github.com/commercialhaskell/intero) via Neovim's terminal and
 asynchronous job control. You might like the following shortcuts:
 
 ```
